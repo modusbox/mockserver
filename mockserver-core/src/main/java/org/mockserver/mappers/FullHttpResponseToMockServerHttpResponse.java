@@ -68,17 +68,21 @@ public class FullHttpResponseToMockServerHttpResponse {
             if (header.getName().getValue().equalsIgnoreCase("Set-Cookie")) {
                 for (NottableString cookieHeader : header.getValues()) {
                     io.netty.handler.codec.http.cookie.Cookie httpCookie = ClientCookieDecoder.LAX.decode(cookieHeader.getValue());
-                    String name = httpCookie.name().trim();
-                    String value = httpCookie.value().trim();
-                    cookies.withEntry(new Cookie(name, value));
+                    if (httpCookie != null && httpCookie.name() != null && httpCookie.value() != null) {
+                        String name = httpCookie.name().trim();
+                        String value = httpCookie.value().trim();
+                        cookies.withEntry(new Cookie(name, value));
+                    }
                 }
             }
             if (header.getName().getValue().equalsIgnoreCase("Cookie")) {
                 for (NottableString cookieHeader : header.getValues()) {
                     for (io.netty.handler.codec.http.cookie.Cookie httpCookie : ServerCookieDecoder.LAX.decode(cookieHeader.getValue())) {
-                        String name = httpCookie.name().trim();
-                        String value = httpCookie.value().trim();
-                        cookies.withEntry(new Cookie(name, value));
+                        if (httpCookie != null && httpCookie.name() != null && httpCookie.value() != null) {
+                            String name = httpCookie.name().trim();
+                            String value = httpCookie.value().trim();
+                            cookies.withEntry(new Cookie(name, value));
+                        }
                     }
                 }
             }

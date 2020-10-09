@@ -491,10 +491,14 @@ public class HttpResponse extends Action<HttpResponse> implements HttpMessage<Ht
     public boolean cookieHeadeDoesNotAlreadyExists(String name, String value) {
         List<String> setCookieHeaders = getHeader(SET_COOKIE.toString());
         for (String setCookieHeader : setCookieHeaders) {
-            String existingCookieName = ClientCookieDecoder.LAX.decode(setCookieHeader).name();
-            String existingCookieValue = ClientCookieDecoder.LAX.decode(setCookieHeader).value();
-            if (existingCookieName.equalsIgnoreCase(name) && existingCookieValue.equalsIgnoreCase(value)) {
-                return false;
+            try {
+                String existingCookieName = ClientCookieDecoder.LAX.decode(setCookieHeader).name();
+                String existingCookieValue = ClientCookieDecoder.LAX.decode(setCookieHeader).value();
+                if (existingCookieName.equalsIgnoreCase(name) && existingCookieValue.equalsIgnoreCase(value)) {
+                    return false;
+                }
+            } catch (NullPointerException e) {
+                System.out.println("NullPointerException cookieHeadeDoesNotAlreadyExists");
             }
         }
         return true;
